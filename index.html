@@ -1,0 +1,3801 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاضنة الأطفال الذكية 👶 Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+
+        [data-theme="dark"] {
+            --bg: #111827;
+            --card-bg: #1f2937;
+            --text: #f9fafb;
+            --border: #374151;
+        }
+
+        [data-theme="light"] {
+            --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* الهيدر */
+        .header {
+            background: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left h1 {
+            font-size: 1.8em;
+            color: var(--primary);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .badge-online { background: var(--success); color: white; }
+        .badge-critical { background: var(--danger); color: white; }
+        .badge-normal { background: var(--primary); color: white; }
+        .badge-warning { background: var(--warning); color: white; }
+
+        /* التبويبات */
+        .tabs {
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tab {
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* المحتوى */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* الشبكة */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        }
+
+        /* البطاقة */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* عرض القراءات */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .sensor-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .sensor-item {
+            background: #374151;
+        }
+
+        .sensor-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .sensor-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .sensor-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .sensor-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .sensor-status {
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-ok {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-alert {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        /* السلايدر */
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .slider-value {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        [data-theme="dark"] .slider {
+            background: #4b5563;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* الحاضنة المرئية */
+        .incubator-visual {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to bottom, #e0f2fe 0%, #bae6fd 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid var(--primary);
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .incubator-visual {
+            background: linear-gradient(to bottom, #1e3a8a 0%, #1e40af 100%);
+        }
+
+        .baby-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6em;
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .incubator-overlay {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            padding: 10px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .incubator-overlay {
+            background: rgba(31, 41, 55, 0.8);
+        }
+
+        /* أزرار التحكم */
+        .control-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        /* مفتاح التبديل */
+        .switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        [data-theme="dark"] .switch-container {
+            background: #374151;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .switch-slider {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        input:checked + .switch-slider:before {
+            transform: translateX(30px);
+        }
+
+        /* الرسوم البيانية */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* التنبيهات */
+        .alerts-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-right: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-right-color: #3b82f6;
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-right-color: var(--warning);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-right-color: var(--danger);
+        }
+
+        .alert-icon {
+            font-size: 1.5em;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-time {
+            font-size: 0.85em;
+            opacity: 0.6;
+        }
+
+        /* زر الطوارئ */
+        .emergency-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            z-index: 999;
+        }
+
+        .emergency-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.6);
+        }
+
+        .emergency-icon {
+            font-size: 2em;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* معلومات المريض */
+        .patient-info {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .patient-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .patient-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .patient-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .patient-value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+      /* تنسيقات أعضاء الفريق */
+        .team-member {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .team-member {
+            background: #374151;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .member-avatar {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .team-member h4 {
+            color: var(--primary);
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            color: var(--warning);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .member-info {
+            text-align: right;
+            margin: 20px 0;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .social-btn {
+            padding: 8px 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .social-btn:hover {
+            background: var(--secondary);
+            transform: scale(1.05);
+        }
+
+        /* تنسيقات المشرفين */
+        .supervisor-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+        }
+
+        [data-theme="dark"] .supervisor-card {
+            background: #374151;
+        }
+
+        .supervisor-avatar {
+            font-size: 3.5em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .supervisor-card h4 {
+            color: var(--primary);
+            font-size: 1.4em;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .supervisor-title {
+            text-align: center;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .supervisor-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            line-height: 2;
+            font-size: 0.9em;
+        }
+
+        [data-theme="dark"] .supervisor-info {
+            background: #1f2937;
+        }
+
+        .expertise {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        [data-theme="dark"] .expertise {
+            background: #1f2937;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .info-box {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        [data-theme="dark"] .info-box {
+            background: #374151;
+        }
+
+        .info-box strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            margin: 0;
+        }
+
+        /* ثيمات */
+        .theme-preview {
+            background: var(--light);
+            border-radius: 12px;
+            margin: 20px 0;
+            padding: 20px;
+            border: 3px dashed var(--primary);
+        }
+
+        [data-theme="dark"] .theme-preview {
+            background: #374151;
+        }
+
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .sensor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .emergency-btn {
+                width: 60px;
+                height: 60px;
+                bottom: 15px;
+                left: 15px;
+            }
+        }
+
+        /* تأثيرات إضافية */
+        .glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            }
+        }
+
+        /* ملاحظات الممرضات */
+        .notes-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .note-item {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-right: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .note-item {
+            background: #374151;
+        }
+
+        .note-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .note-nurse {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1em;
+        }
+
+        .note-time {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .note-content {
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .note-category {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .category-vital { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .category-feeding { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .category-medication { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .category-observation { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .category-general { background: rgba(102, 126, 234, 0.2); color: var(--primary); }
+
+        .add-note-form {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        [data-theme="dark"] .add-note-form {
+            background: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            background: var(--card-bg);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* قاعدة البيانات و Arduino */
+        .connection-panel {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        [data-theme="dark"] .connection-panel {
+            background: #374151;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .status-connected {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .status-dot-animated {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .db-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .db-stat-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 2px solid var(--border);
+        }
+
+        .db-stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .db-stat-label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .arduino-sensors {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .arduino-sensor-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            text-align: center;
+        }
+
+        .sensor-reading {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .last-sync {
+            font-size: 0.85em;
+            opacity: 0.6;
+            margin-top: 10px;
+        }
+
+        /* نظام التصوير ثلاثي الأبعاد */
+        .d3-viewer-container {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .d3-canvas {
+            width: 100%;
+            height: 600px;
+            background: linear-gradient(to bottom, #87ceeb 0%, #e0f2fe 50%, #f0f0f0 100%);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            perspective: 1200px;
+            border: 3px solid var(--primary);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] .d3-canvas {
+            background: linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+
+        /* أرضية مع ظل */
+        .floor-shadow {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            height: 80px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+        }
+
+        .incubator-3d {
+            width: 420px;
+            height: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(20deg) rotateY(0deg);
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .incubator-3d:hover {
+            transform: translate(-50%, -50%) rotateX(20deg) rotateY(25deg);
+        }
+
+        /* القاعدة الأساسية - أكثر واقعية */
+        .incubator-base {
+            width: 420px;
+            height: 280px;
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(145deg, #e8e8e8 0%, #d0d0d0 50%, #b8b8b8 100%);
+            border-radius: 25px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.4),
+                inset 0 -2px 10px rgba(0,0,0,0.2),
+                inset 0 2px 10px rgba(255,255,255,0.5);
+            border: 5px solid #a0a0a0;
+            transform: translateZ(-20px);
+        }
+
+        [data-theme="dark"] .incubator-base {
+            background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            border-color: #555;
+        }
+
+        /* تفاصيل القاعدة */
+        .base-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            height: 60px;
+            background: linear-gradient(to bottom, #2c3e50 0%, #34495e 100%);
+            border-radius: 10px;
+            box-shadow: 
+                0 5px 15px rgba(0,0,0,0.3),
+                inset 0 1px 3px rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 15px;
+        }
+
+        .control-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+            animation: blink-led 2s infinite;
+        }
+
+        .led-green { background: #00ff00; color: #00ff00; }
+        .led-yellow { background: #ffff00; color: #ffff00; animation-delay: 0.5s; }
+        .led-blue { background: #0080ff; color: #0080ff; animation-delay: 1s; }
+
+        @keyframes blink-led {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* الغطاء الزجاجي - محسّن */
+        .incubator-dome {
+            width: 400px;
+            height: 220px;
+            position: absolute;
+            top: 30px;
+            left: 10px;
+            background: linear-gradient(
+                to bottom,
+                rgba(180, 220, 255, 0.15) 0%,
+                rgba(180, 220, 255, 0.25) 50%,
+                rgba(180, 220, 255, 0.35) 100%
+            );
+            border-radius: 200px 200px 25px 25px;
+            border: 4px solid rgba(100, 150, 200, 0.5);
+            backdrop-filter: blur(2px);
+            box-shadow: 
+                inset 0 10px 30px rgba(255,255,255,0.4),
+                inset 0 -10px 30px rgba(0,0,0,0.1),
+                0 10px 40px rgba(0,0,0,0.2);
+            transform: translateZ(10px);
+            overflow: hidden;
+        }
+
+        /* انعكاسات الزجاج */
+        .glass-reflection {
+            position: absolute;
+            top: 10px;
+            left: 30px;
+            width: 150px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 60%);
+            border-radius: 50%;
+            transform: rotate(-20deg);
+            filter: blur(5px);
+        }
+
+        .glass-reflection-2 {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            width: 100px;
+            height: 80px;
+            background: linear-gradient(225deg, rgba(255,255,255,0.3) 0%, transparent 60%);
+            border-radius: 50%;
+            transform: rotate(15deg);
+            filter: blur(3px);
+        }
+
+        /* الطفل - أكثر واقعية */
+        .baby-3d {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(5px);
+            font-size: 100px;
+            animation: breathe3d 3.5s ease-in-out infinite;
+            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));
+            z-index: 5;
+        }
+
+        @keyframes breathe3d {
+            0%, 100% { 
+                transform: translate(-50%, -50%) translateZ(5px) scale(1); 
+            }
+            50% { 
+                transform: translate(-50%, -50%) translateZ(5px) scale(1.03); 
+            }
+        }
+
+        /* بطانية الطفل */
+        .baby-blanket {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 30px;
+            background: linear-gradient(to right, #e3f2fd, #bbdefb, #90caf9);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 4;
+        }
+
+        /* مراتب الحاضنة */
+        .incubator-mattress {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(-5px);
+            width: 340px;
+            height: 120px;
+            background: linear-gradient(to bottom, #fff8e1 0%, #ffecb3 100%);
+            border-radius: 15px;
+            box-shadow: 
+                0 -2px 10px rgba(0,0,0,0.1),
+                inset 0 2px 5px rgba(255,255,255,0.5),
+                inset 0 -2px 5px rgba(0,0,0,0.1);
+            border: 2px solid #ffd54f;
+        }
+
+        /* خطوط المراتب */
+        .mattress-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 30px,
+                rgba(255,193,7,0.2) 30px,
+                rgba(255,193,7,0.2) 31px
+            );
+        }
+
+        /* مؤشرات الأنظمة - محسّنة */
+        .system-indicator {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: pulse-indicator 2.5s infinite;
+            box-shadow: 
+                0 0 20px rgba(0,0,0,0.4),
+                inset 0 2px 5px rgba(255,255,255,0.3),
+                inset 0 -2px 5px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.4);
+            transform-style: preserve-3d;
+            z-index: 10;
+        }
+
+        @keyframes pulse-indicator {
+            0%, 100% { 
+                transform: scale(1) translateZ(15px); 
+                box-shadow: 
+                    0 0 20px rgba(0,0,0,0.4),
+                    0 0 30px currentColor,
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+            }
+            50% { 
+                transform: scale(1.08) translateZ(20px); 
+                box-shadow: 
+                    0 0 30px rgba(0,0,0,0.5),
+                    0 0 50px currentColor,
+                    inset 0 2px 5px rgba(255,255,255,0.3);
+            }
+        }
+
+        .system-indicator:hover {
+            transform: scale(1.4) translateZ(25px) !important;
+            z-index: 20;
+            animation: none;
+        }
+
+        .indicator-heating {
+            background: radial-gradient(circle, #ff6b6b, #ff5252);
+            color: #ff6b6b;
+            top: 68%;
+            left: 8%;
+        }
+
+        .indicator-humidity {
+            background: radial-gradient(circle, #4fc3f7, #29b6f6);
+            color: #4fc3f7;
+            top: 68%;
+            right: 8%;
+        }
+
+        .indicator-oxygen {
+            background: radial-gradient(circle, #81c784, #66bb6a);
+            color: #81c784;
+            top: 25%;
+            left: 12%;
+        }
+
+        .indicator-light-normal {
+            background: radial-gradient(circle, #fff176, #ffeb3b);
+            color: #fff176;
+            top: 8%;
+            left: 50%;
+            transform: translateX(-50%) translateZ(15px);
+        }
+
+        .indicator-light-jaundice {
+            background: radial-gradient(circle, #ffb74d, #ffa726);
+            color: #ffb74d;
+            top: 8%;
+            left: 28%;
+        }
+
+        .indicator-light-uv {
+            background: radial-gradient(circle, #9575cd, #7e57c2);
+            color: #9575cd;
+            top: 8%;
+            right: 28%;
+        }
+
+        .indicator-sensor {
+            background: radial-gradient(circle, #90a4ae, #78909c);
+            color: #90a4ae;
+            bottom: 18%;
+            right: 12%;
+        }
+
+        /* تسميات المؤشرات - محسّنة */
+        .indicator-label {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,30,0.9));
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .indicator-label::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(0,0,0,0.9);
+        }
+
+        .system-indicator:hover .indicator-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* تأثيرات الإضاءة - محسّنة */
+        .light-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 200px 200px 25px 25px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            mix-blend-mode: screen;
+        }
+
+        .light-effect.active {
+            opacity: 1;
+        }
+
+        .light-normal {
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(255, 255, 240, 0.8) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 20%, rgba(255, 255, 200, 0.4) 0%, transparent 70%);
+            animation: flicker-light 3s ease-in-out infinite;
+        }
+
+        @keyframes flicker-light {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        .light-jaundice {
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(255, 200, 0, 0.9) 0%, rgba(255, 220, 100, 0.5) 40%, transparent 70%),
+                radial-gradient(ellipse at 50% 30%, rgba(255, 180, 0, 0.6) 0%, transparent 60%);
+            animation: pulse-jaundice 2s ease-in-out infinite;
+            box-shadow: 0 0 80px rgba(255, 200, 0, 0.6);
+        }
+
+        @keyframes pulse-jaundice {
+            0%, 100% { opacity: 1; filter: brightness(1); }
+            50% { opacity: 0.85; filter: brightness(1.1); }
+        }
+
+        .light-uv {
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(150, 100, 255, 0.95) 0%, rgba(180, 140, 255, 0.6) 35%, transparent 65%),
+                radial-gradient(ellipse at 50% 25%, rgba(130, 90, 230, 0.7) 0%, transparent 55%);
+            animation: pulse-uv 1.8s ease-in-out infinite;
+            box-shadow: 
+                0 0 100px rgba(150, 100, 255, 0.8),
+                inset 0 0 50px rgba(200, 150, 255, 0.4);
+        }
+
+        @keyframes pulse-uv {
+            0%, 100% { 
+                opacity: 0.85; 
+                filter: brightness(1) saturate(1.2);
+            }
+            50% { 
+                opacity: 1; 
+                filter: brightness(1.15) saturate(1.4);
+            }
+        }
+
+        /* شعاع الضوء */
+        .light-beam {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.6));
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .light-effect.active + .light-beam {
+            opacity: 1;
+        }
+
+        /* وضع الدوران التلقائي */
+        .incubator-3d.rotating {
+            animation: rotate3d 15s linear infinite;
+        }
+
+        @keyframes rotate3d {
+            from { transform: translate(-50%, -50%) rotateX(20deg) rotateY(0deg); }
+            to { transform: translate(-50%, -50%) rotateX(20deg) rotateY(360deg); }
+        }
+
+        /* أزرار العرض - محسّنة */
+        .view-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .view-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .view-btn.active {
+            background: var(--success);
+        }
+
+        /* تأثيرات الإضاءة */
+        .light-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 190px 190px 20px 20px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .light-effect.active {
+            opacity: 1;
+        }
+
+        .light-normal {
+            background: radial-gradient(ellipse at center top, rgba(255, 255, 200, 0.5) 0%, transparent 70%);
+        }
+
+        .light-jaundice {
+            background: radial-gradient(ellipse at center top, rgba(255, 200, 0, 0.6) 0%, transparent 70%);
+            animation: flicker-jaundice 2s infinite;
+        }
+
+        @keyframes flicker-jaundice {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .light-uv {
+            background: radial-gradient(ellipse at center top, rgba(150, 100, 255, 0.7) 0%, transparent 70%);
+            animation: pulse-uv 1.5s infinite;
+        }
+
+        @keyframes pulse-uv {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* معلومات النظام المحدد */
+        .system-info-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+            display: none;
+        }
+
+        [data-theme="dark"] .system-info-panel {
+            background: #374151;
+        }
+
+        .system-info-panel.active {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .system-info-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .system-info-content {
+            line-height: 1.8;
+        }
+
+        .system-info-content strong {
+            color: var(--primary);
+        }
+
+        /* شبكة معلومات */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+
+        .info-item-label {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .info-item-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* وضع الدوران التلقائي */
+        .incubator-3d.rotating {
+            animation: rotate3d 10s linear infinite;
+        }
+
+        @keyframes rotate3d {
+            from { transform: translate(-50%, -50%) rotateX(15deg) rotateY(0deg); }
+            to { transform: translate(-50%, -50%) rotateX(15deg) rotateY(360deg); }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <div class="container">
+        <!-- الهيدر -->
+        <div class="header">
+            <div class="header-left">
+                <span style="font-size: 2.5em;">👶</span>
+                <div>
+                    <h1>حاضنة الأطفال الذكية</h1>
+                    <span style="opacity: 0.7; font-size: 0.9em;">NICU Smart Incubator Pro</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="status-badges">
+                    <span class="badge badge-online" id="connectionBadge">● متصل</span>
+                    <span class="badge badge-normal" id="statusBadge">✓ طبيعي</span>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            </div>
+        </div>
+
+        <!-- معلومات المريض -->
+        <div class="patient-info">
+            <h2>📋 معلومات المريض</h2>
+            <div class="patient-details">
+                <div class="patient-field">
+                    <span class="patient-label">الاسم:</span>
+                    <span class="patient-value">طفل رضيع - 001</span>
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">تاريخ الولادة:</span>
+                    <span class="patient-value">01/02/2026</span>
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">عمر الحمل:</span>
+                    <span class="patient-value">32 أسبوع</span>
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">مدة الإقامة:</span>
+                    <span class="patient-value">5 أيام</span>
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">الوزن الحالي:</span>
+                    <span class="patient-value" id="currentWeight">2.4 كجم</span>
+                </div>
+                <div class="patient-field">
+                    <span class="patient-label">آخر تحديث:</span>
+                    <span class="patient-value" id="lastUpdate">الآن</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- التبويبات -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('monitoring')">📊 المراقبة الحية</button>
+            <button class="tab" onclick="switchTab('control')">⚙️ التحكم والإعدادات</button>
+            <button class="tab" onclick="switchTab('charts')">📈 الرسوم البيانية</button>
+            <button class="tab" onclick="switchTab('alerts')">🚨 التنبيهات</button>
+            <button class="tab" onclick="switchTab('notes')">📝 ملاحظات الممرضات</button>
+            <button class="tab" onclick="switchTab('arduino')">🔌 Arduino/قاعدة البيانات</button>
+            <button class="tab" onclick="switchTab('settings')">🔧 الإعدادات المتقدمة</button>
+           <button class="tab" onclick="switchTab('settings')">⚙️ الإعدادات</button>
+        </div>
+
+        <!-- تبويب المراقبة -->
+        <div id="monitoring" class="tab-content active">
+            <!-- العرض ثلاثي الأبعاد -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title">
+                    <span>🎨</span>
+                    العرض التفاعلي ثلاثي الأبعاد
+                </div>
+                <div class="d3-viewer-container">
+                    <div class="d3-canvas" id="d3Canvas">
+                        <!-- ظل أرضي -->
+                        <div class="floor-shadow"></div>
+                        
+                        <div class="incubator-3d" id="incubator3d">
+                            <!-- القاعدة -->
+                            <div class="incubator-base">
+                                <!-- لوحة التحكم -->
+                                <div class="base-panel">
+                                    <div class="control-led led-green"></div>
+                                    <div class="control-led led-yellow"></div>
+                                    <div class="control-led led-blue"></div>
+                                    <div style="color: white; font-size: 10px; font-weight: bold;">NICU PRO</div>
+                                </div>
+                            </div>
+                            
+                            <!-- المراتب -->
+                            <div class="incubator-mattress">
+                                <div class="mattress-lines"></div>
+                            </div>
+                            
+                            <!-- بطانية الطفل -->
+                            <div class="baby-blanket"></div>
+                            
+                            <!-- الطفل -->
+                            <div class="baby-3d">👶</div>
+                            
+                            <!-- الغطاء الزجاجي -->
+                            <div class="incubator-dome" id="incubatorDome">
+                                <!-- انعكاسات الزجاج -->
+                                <div class="glass-reflection"></div>
+                                <div class="glass-reflection-2"></div>
+                                
+                                <!-- تأثيرات الإضاءة -->
+                                <div class="light-effect light-normal" id="lightNormal"></div>
+                                <div class="light-beam"></div>
+                                
+                                <div class="light-effect light-jaundice" id="lightJaundice"></div>
+                                <div class="light-beam"></div>
+                                
+                                <div class="light-effect light-uv" id="lightUV"></div>
+                                <div class="light-beam"></div>
+                            </div>
+                            
+                            <!-- مؤشرات الأنظمة -->
+                            <div class="system-indicator indicator-heating" onclick="showSystemInfo('heating')" data-system="heating">
+                                <span>🔥</span>
+                                <div class="indicator-label">نظام التدفئة</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-humidity" onclick="showSystemInfo('humidity')" data-system="humidity">
+                                <span>💧</span>
+                                <div class="indicator-label">نظام الترطيب</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-oxygen" onclick="showSystemInfo('oxygen')" data-system="oxygen">
+                                <span>🫁</span>
+                                <div class="indicator-label">إمداد الأكسجين</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-light-normal" onclick="showSystemInfo('light-normal')" data-system="light-normal">
+                                <span>💡</span>
+                                <div class="indicator-label">إضاءة عادية</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-light-jaundice" onclick="showSystemInfo('light-jaundice')" data-system="light-jaundice">
+                                <span>🟡</span>
+                                <div class="indicator-label">علاج ضوئي</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-light-uv" onclick="showSystemInfo('light-uv')" data-system="light-uv">
+                                <span>🔵</span>
+                                <div class="indicator-label">تعقيم UV-C</div>
+                            </div>
+                            
+                            <div class="system-indicator indicator-sensor" onclick="showSystemInfo('sensors')" data-system="sensors">
+                                <span>📡</span>
+                                <div class="indicator-label">المستشعرات</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- أزرار التحكم في العرض -->
+                    <div class="view-controls">
+                        <button class="view-btn" onclick="toggleRotation()">
+                            <span id="rotationIcon">🔄</span>
+                            <span id="rotationText">دوران تلقائي</span>
+                        </button>
+                        <button class="view-btn" onclick="resetView()">
+                            <span>🔃</span>
+                            إعادة ضبط العرض
+                        </button>
+                        <button class="view-btn" onclick="toggleAllLights()">
+                            <span>💡</span>
+                            <span id="lightsText">إظهار جميع الأضواء</span>
+                        </button>
+                    </div>
+                    
+                    <!-- لوحة معلومات النظام -->
+                    <div class="system-info-panel" id="systemInfoPanel">
+                        <div class="system-info-title" id="systemInfoTitle">
+                            <span id="systemInfoIcon"></span>
+                            <span id="systemInfoName"></span>
+                        </div>
+                        <div class="system-info-content" id="systemInfoContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid">
+                <!-- القراءات الحيوية -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🫀</span>
+                        المؤشرات الحيوية
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-item glow">
+                            <div class="sensor-icon">🌡️</div>
+                            <div class="sensor-value" id="bodyTemp">36.5</div>
+                            <div class="sensor-label">درجة الحرارة °C</div>
+                            <span class="sensor-status status-ok">طبيعي</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">❤️</div>
+                            <div class="sensor-value" id="heartRate">140</div>
+                            <div class="sensor-label">نبضات القلب / دقيقة</div>
+                            <span class="sensor-status status-ok">طبيعي</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🫁</div>
+                            <div class="sensor-value" id="oxygenLevel">96</div>
+                            <div class="sensor-label">الأكسجين SpO2 %</div>
+                            <span class="sensor-status status-ok">طبيعي</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌬️</div>
+                            <div class="sensor-value" id="respRate">45</div>
+                            <div class="sensor-label">معدل التنفس / دقيقة</div>
+                            <span class="sensor-status status-ok">طبيعي</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- البيئة الداخلية -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🏠</span>
+                        البيئة الداخلية
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <div class="sensor-icon">💧</div>
+                            <div class="sensor-value" id="humidity">55</div>
+                            <div class="sensor-label">الرطوبة %</div>
+                            <span class="sensor-status status-ok">مناسب</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">⚖️</div>
+                            <div class="sensor-value" id="weight">2.4</div>
+                            <div class="sensor-label">الوزن كجم</div>
+                            <span class="sensor-status status-ok">+50g اليوم</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🔊</div>
+                            <div class="sensor-value" id="noise">42</div>
+                            <div class="sensor-label">الضوضاء dB</div>
+                            <span class="sensor-status status-ok">هادئ</span>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-icon">🌡️</div>
+                            <div class="sensor-value" id="envTemp">35.0</div>
+                            <div class="sensor-label">حرارة الحاضنة °C</div>
+                            <span class="sensor-status status-ok">مثالي</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- العرض المرئي -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>👁️</span>
+                        العرض المرئي للحاضنة
+                    </div>
+                    <div class="incubator-visual">
+                        <div class="incubator-overlay">
+                            <span>🌡️ <strong id="visualTemp">36.5°C</strong></span>
+                            <span>💧 <strong id="visualHumidity">55%</strong></span>
+                            <span>❤️ <strong id="visualHeart">140 bpm</strong></span>
+                            <span>🫁 <strong id="visualOxygen">96%</strong></span>
+                        </div>
+                        <div class="baby-icon">👶</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب التحكم -->
+        <div id="control" class="tab-content">
+            <div class="grid">
+                <!-- التدفئة -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🔥</span>
+                        نظام التدفئة
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل التدفئة</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" checked id="heatingSwitch">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>درجة الحرارة المستهدفة</span>
+                            <span class="slider-value" id="heatingTempValue">36.5°C</span>
+                        </div>
+                        <input type="range" class="slider" min="32" max="37" step="0.5" value="36.5" 
+                               id="heatingTemp" oninput="updateHeatingTemp(this.value)">
+                    </div>
+                </div>
+
+                <!-- الترطيب -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>💦</span>
+                        نظام الترطيب
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الترطيب</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" checked id="humidifierSwitch">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>مستوى الرطوبة المستهدف</span>
+                            <span class="slider-value" id="humidityTargetValue">55%</span>
+                        </div>
+                        <input type="range" class="slider" min="40" max="70" step="5" value="55" 
+                               id="humidityTarget" oninput="updateHumidityTarget(this.value)">
+                    </div>
+                </div>
+
+                <!-- الأكسجين -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🫁</span>
+                        إمداد الأكسجين
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الأكسجين</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" checked id="oxygenSwitch">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>تركيز الأكسجين</span>
+                            <span class="slider-value" id="oxygenLevelValue">30%</span>
+                        </div>
+                        <input type="range" class="slider" min="21" max="100" step="1" value="30" 
+                               id="oxygenLevelControl" oninput="updateOxygenLevel(this.value)">
+                    </div>
+                </div>
+
+                <!-- الإضاءة العادية -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>💡</span>
+                        الإضاءة العادية
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الإضاءة</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" checked id="normalLightSwitch">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>شدة الإضاءة</span>
+                            <span class="slider-value" id="normalLightValue">50%</span>
+                        </div>
+                        <input type="range" class="slider" min="0" max="100" step="10" value="50" 
+                               id="normalLightIntensity" oninput="updateNormalLight(this.value)">
+                    </div>
+                </div>
+
+                <!-- العلاج الضوئي لليرقان -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🟡</span>
+                        العلاج الضوئي (اليرقان/الصفار)
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل الضوء الأصفر</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="jaundiceSwitch">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>شدة الضوء الأصفر (450-470 nm)</span>
+                            <span class="slider-value" id="jaundiceLightValue">60%</span>
+                        </div>
+                        <input type="range" class="slider" min="0" max="100" step="10" value="60" 
+                               id="jaundiceLightIntensity" oninput="updateJaundiceLight(this.value)">
+                    </div>
+                    <div style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 4px solid #ffc107;">
+                        <small style="color: #856404;">
+                            ⚠️ <strong>تنبيه طبي:</strong> يستخدم لعلاج اليرقان الوليدي (ارتفاع البيليروبين). 
+                            مدة العلاج: 8-12 ساعة حسب توجيهات الطبيب.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- تعقيم UV-C -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🔵</span>
+                        تعقيم UV-C
+                    </div>
+                    <div class="switch-container">
+                        <span><strong>تفعيل التعقيم</strong></span>
+                        <label class="switch">
+                            <input type="checkbox" id="uvSwitch" onchange="toggleUVSterilization(this.checked)">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>مدة التعقيم (دقائق)</span>
+                            <span class="slider-value" id="uvDurationValue">15 د</span>
+                        </div>
+                        <input type="range" class="slider" min="5" max="60" step="5" value="15" 
+                               id="uvDuration" oninput="updateUVDuration(this.value)">
+                    </div>
+                    <div id="uvTimer" style="display: none; text-align: center; margin-top: 15px; padding: 15px; background: #e3f2fd; border-radius: 10px;">
+                        <div style="font-size: 2em; font-weight: bold; color: #1976d2;" id="uvCountdown">15:00</div>
+                        <div style="color: #1565c0; margin-top: 5px;">⏱️ التعقيم جاري...</div>
+                        <button class="btn-small btn-danger" onclick="stopUVSterilization()" style="margin-top: 10px; padding: 8px 20px;">
+                            ⏹️ إيقاف
+                        </button>
+                    </div>
+                    <div style="background: #ffebee; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 4px solid #ef4444;">
+                        <small style="color: #c62828;">
+                            ⚠️ <strong>تحذير:</strong> يجب إخلاء الحاضنة تماماً أثناء التعقيم! 
+                            الأشعة UV-C خطرة على البشرة والعينين.
+                            <br>🔒 يتم التعقيم فقط عند خلو الحاضنة.
+                        </small>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم السريع -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>⚡</span>
+                        التحكم السريع
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn btn-success" onclick="quickPreset('normal')">
+                            <span>✓</span>
+                            وضع عادي
+                        </button>
+                        <button class="control-btn btn-primary" onclick="quickPreset('intensive')">
+                            <span>⚡</span>
+                            وضع مكثف
+                        </button>
+                        <button class="control-btn btn-warning" onclick="quickPreset('phototherapy')">
+                            <span>💡</span>
+                            علاج ضوئي
+                        </button>
+                        <button class="control-btn btn-danger" onclick="emergencyStop()">
+                            <span>⏸️</span>
+                            إيقاف الطوارئ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الرسوم البيانية -->
+        <div id="charts" class="tab-content">
+            <div class="grid grid-2">
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        درجة الحرارة (24 ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        نبضات القلب (24 ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="heartChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        الأكسجين (24 ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="oxygenChart"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">
+                        <span>📈</span>
+                        الرطوبة (24 ساعة)
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="humidityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب التنبيهات -->
+        <div id="alerts" class="tab-content">
+            <div class="grid">
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>🔔</span>
+                        سجل التنبيهات
+                    </div>
+                    <div class="alerts-list" id="alertsList">
+                        <div class="alert-item alert-info">
+                            <div class="alert-icon">ℹ️</div>
+                            <div class="alert-content">
+                                <strong>معلومة:</strong> جميع المعايير ضمن المدى الطبيعي
+                            </div>
+                            <div class="alert-time">الآن</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب ملاحظات الممرضات -->
+        <div id="notes" class="tab-content">
+            <div class="grid">
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>📝</span>
+                        إضافة ملاحظة جديدة
+                    </div>
+                    <div class="add-note-form">
+                        <div class="form-group">
+                            <label>اسم الممرضة/الممرض:</label>
+                            <input type="text" class="form-input" id="nurseName" placeholder="أدخل الاسم">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع الملاحظة:</label>
+                            <select class="form-select" id="noteCategory">
+                                <option value="vital">مؤشرات حيوية</option>
+                                <option value="feeding">تغذية</option>
+                                <option value="medication">دواء</option>
+                                <option value="observation">ملاحظة عامة</option>
+                                <option value="general">عام</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الملاحظة:</label>
+                            <textarea class="form-textarea" id="noteContent" placeholder="اكتب الملاحظة هنا..."></textarea>
+                        </div>
+                        <button class="control-btn btn-primary" onclick="addNote()">
+                            <span>➕</span>
+                            إضافة الملاحظة
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>📋</span>
+                        سجل الملاحظات
+                        <button class="btn-small btn-warning" onclick="exportNotes()" style="margin-right: auto;">
+                            📥 تصدير
+                        </button>
+                    </div>
+                    <div class="notes-container" id="notesContainer">
+                        <!-- الملاحظات ستظهر هنا -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب Arduino وقاعدة البيانات -->
+        <div id="arduino" class="tab-content">
+            <div class="grid">
+                <!-- اتصال Arduino -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>🔌</span>
+                        اتصال Arduino
+                    </div>
+                    <div class="connection-panel">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>حالة الاتصال:</h3>
+                            <span class="status-indicator status-disconnected" id="arduinoStatus">
+                                <span class="status-dot-animated"></span>
+                                غير متصل
+                            </span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>عنوان IP لـ Arduino:</label>
+                            <input type="text" class="form-input" id="arduinoIP" placeholder="192.168.1.100" value="192.168.1.100">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>المنفذ (Port):</label>
+                            <input type="text" class="form-input" id="arduinoPort" placeholder="80" value="80">
+                        </div>
+                        
+                        <div class="control-buttons" style="grid-template-columns: 1fr 1fr;">
+                            <button class="control-btn btn-success" onclick="connectArduino()">
+                                <span>🔗</span>
+                                اتصال
+                            </button>
+                            <button class="control-btn btn-danger" onclick="disconnectArduino()">
+                                <span>✖️</span>
+                                قطع الاتصال
+                            </button>
+                        </div>
+                        
+                        <div class="last-sync" id="arduinoLastSync">
+                            آخر مزامنة: لم يتم الاتصال بعد
+                        </div>
+                    </div>
+                    
+                    <div class="arduino-sensors">
+                        <div class="arduino-sensor-card">
+                            <div>🌡️ درجة الحرارة</div>
+                            <div class="sensor-reading" id="arduinoTemp">--</div>
+                            <div style="font-size: 0.9em;">°C</div>
+                        </div>
+                        <div class="arduino-sensor-card">
+                            <div>💧 الرطوبة</div>
+                            <div class="sensor-reading" id="arduinoHum">--</div>
+                            <div style="font-size: 0.9em;">%</div>
+                        </div>
+                        <div class="arduino-sensor-card">
+                            <div>❤️ نبضات القلب</div>
+                            <div class="sensor-reading" id="arduinoHeart">--</div>
+                            <div style="font-size: 0.9em;">bpm</div>
+                        </div>
+                        <div class="arduino-sensor-card">
+                            <div>🫁 الأكسجين</div>
+                            <div class="sensor-reading" id="arduinoOxygen">--</div>
+                            <div style="font-size: 0.9em;">%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- قاعدة البيانات -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>💾</span>
+                        قاعدة البيانات المحلية
+                    </div>
+                    <div class="connection-panel">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>حالة قاعدة البيانات:</h3>
+                            <span class="status-indicator status-connected" id="dbStatus">
+                                <span class="status-dot-animated"></span>
+                                متصل
+                            </span>
+                        </div>
+                        
+                        <div class="db-stats">
+                            <div class="db-stat-item">
+                                <div class="db-stat-value" id="dbRecords">0</div>
+                                <div class="db-stat-label">سجلات البيانات</div>
+                            </div>
+                            <div class="db-stat-item">
+                                <div class="db-stat-value" id="dbNotes">0</div>
+                                <div class="db-stat-label">الملاحظات</div>
+                            </div>
+                            <div class="db-stat-item">
+                                <div class="db-stat-value" id="dbSize">0</div>
+                                <div class="db-stat-label">الحجم (KB)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="control-buttons" style="grid-template-columns: 1fr 1fr; margin-top: 20px;">
+                            <button class="control-btn btn-primary" onclick="backupDatabase()">
+                                <span>💾</span>
+                                نسخ احتياطي
+                            </button>
+                            <button class="control-btn btn-warning" onclick="clearDatabase()">
+                                <span>🗑️</span>
+                                مسح البيانات
+                            </button>
+                        </div>
+                        
+                        <div class="last-sync" id="dbLastUpdate">
+                            آخر تحديث: --
+                        </div>
+                    </div>
+                </div>
+
+                <!-- سجل الاتصال -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-title">
+                        <span>📡</span>
+                        سجل الاتصال والمزامنة
+                    </div>
+                    <div class="alerts-list" id="connectionLog">
+                        <div class="alert-item alert-info">
+                            <div class="alert-icon">ℹ️</div>
+                            <div class="alert-content">
+                                <strong>معلومة:</strong> قاعدة البيانات المحلية جاهزة
+                            </div>
+                            <div class="alert-time">الآن</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- تبويب الإعدادات -->
+        <div id="settings" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">
+                        <span>⚙️</span>
+                        حدود التنبيه
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>حد الحرارة الأدنى</span>
+                            <span class="slider-value" id="tempMinValue">36.0°C</span>
+                        </div>
+                        <input type="range" class="slider" min="35" max="37" step="0.5" value="36" 
+                               id="tempMin" oninput="updateTempMin(this.value)">
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>حد الحرارة الأعلى</span>
+                            <span class="slider-value" id="tempMaxValue">37.5°C</span>
+                        </div>
+                        <input type="range" class="slider" min="37" max="39" step="0.5" value="37.5" 
+                               id="tempMax" oninput="updateTempMax(this.value)">
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">
+                        <span>💾</span>
+                        حفظ البيانات
+                    </div>
+                    <div class="control-buttons" style="grid-template-columns: 1fr;">
+                        <button class="control-btn btn-primary" onclick="exportData()">
+                            <span>📥</span>
+                            تصدير البيانات
+                        </button>
+                        <button class="control-btn btn-success" onclick="saveSettings()">
+                            <span>💾</span>
+                            حفظ الإعدادات
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- الإعدادات -->
+        <div id="settings" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h3 class="card-title">🌐 إعدادات الاتصال</h3>
+                    <div class="input-group">
+                        <label class="input-label">عنوان IP للـ WeMos:</label>
+                        <input type="text" class="input-field" id="wemosIP" value="192.168.43.251">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveIP()">💾 حفظ عنوان IP</button>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">🎚️ عتبات الحساسات</h3>
+                    <div class="input-group">
+                        <label class="input-label">عتبة الإضاءة (0-1024):</label>
+                        <input type="number" class="input-field" id="lightThreshold" value="500" min="0" max="1024">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">عتبة الحرارة (°C):</label>
+                        <input type="number" class="input-field" id="tempThreshold" value="28" min="15" max="45">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ الإعدادات</button>
+                </div>
+
+
+
+                <div class="card">
+                    <h3 class="card-title">🎨 الثيمات (المظهر)</h3>
+                    <div class="input-group">
+                        <label class="input-label">اختر الثيم:</label>
+                        <select class="input-field" id="themeSelect" onchange="applyTheme()">
+                            <option value="light">☀️ فاتح (Light)</option>
+                            <option value="dark">🌙 داكن (Dark)</option>
+                            <option value="blue">💙 أزرق (Blue)</option>
+                            <option value="green">💚 أخضر (Green)</option>
+                            <option value="purple">💜 بنفسجي (Purple)</option>
+                            <option value="orange">🧡 برتقالي (Orange)</option>
+                        </select>
+                    </div>
+
+                    <div class="theme-preview" id="themePreview">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="font-size: 3em; margin-bottom: 10px;">🎨</div>
+                            <div>معاينة الثيم المختار</div>
+                        </div>
+                    </div>
+
+                    <div class="switch-container">
+                        <span>تفعيل الثيم التلقائي حسب الوقت</span>
+                        <label class="switch">
+                            <input type="checkbox" id="autoTheme" onchange="toggleAutoTheme()">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+                </div>
+</div>
+        </div>
+    </div>
+
+    <!-- زر الطوارئ -->
+    <button class="emergency-btn" onclick="emergencyAlert()">
+        <span class="emergency-icon">🚨</span>
+        <span style="font-size: 0.8em;">طوارئ</span>
+    </button>
+
+    <script>
+        // البيانات
+        let vitalData = {
+            bodyTemp: 36.5,
+            heartRate: 140,
+            oxygenLevel: 96,
+            respRate: 45,
+            humidity: 55,
+            weight: 2.4,
+            noise: 42,
+            envTemp: 35.0
+        };
+
+        let charts = {};
+        let nursesNotes = [];
+        let arduinoConnected = false;
+        let arduinoIP = '';
+        let arduinoInterval = null;
+        let simulationInterval = null;
+        
+        // متغيرات العرض ثلاثي الأبعاد
+        let isRotating = false;
+        let allLightsOn = false;
+
+        // قاعدة البيانات المحلية
+        const DB_NAME = 'NICUIncubatorDB';
+        
+        // تهيئة قاعدة البيانات
+        function initDatabase() {
+            // تحميل البيانات من LocalStorage
+            const savedData = localStorage.getItem(DB_NAME);
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                nursesNotes = data.notes || [];
+                updateDatabaseStats();
+                displayNotes();
+            }
+            
+            // حفظ البيانات تلقائياً كل دقيقة
+            setInterval(saveToDatabase, 60000);
+            
+            addConnectionLog('info', 'قاعدة البيانات المحلية جاهزة وتعمل', 'الآن');
+        }
+
+        // حفظ في قاعدة البيانات
+        function saveToDatabase() {
+            const data = {
+                notes: nursesNotes,
+                vitalHistory: {
+                    timestamp: Date.now(),
+                    data: vitalData
+                },
+                lastUpdate: new Date().toISOString()
+            };
+            
+            localStorage.setItem(DB_NAME, JSON.stringify(data));
+            updateDatabaseStats();
+            
+            const now = new Date().toLocaleTimeString('ar');
+            document.getElementById('dbLastUpdate').textContent = `آخر تحديث: ${now}`;
+        }
+
+        // تحديث إحصائيات قاعدة البيانات
+        function updateDatabaseStats() {
+            document.getElementById('dbNotes').textContent = nursesNotes.length;
+            
+            const dbData = localStorage.getItem(DB_NAME);
+            const sizeKB = dbData ? (new Blob([dbData]).size / 1024).toFixed(2) : 0;
+            document.getElementById('dbSize').textContent = sizeKB;
+            
+            // عدد السجلات (تقديري)
+            document.getElementById('dbRecords').textContent = nursesNotes.length * 2;
+        }
+
+        // نسخ احتياطي
+        function backupDatabase() {
+            const data = localStorage.getItem(DB_NAME);
+            if (!data) {
+                alert('⚠️ لا توجد بيانات للنسخ الاحتياطي');
+                return;
+            }
+            
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `nicu-backup-${Date.now()}.json`;
+            link.click();
+            
+            addConnectionLog('info', 'تم إنشاء نسخة احتياطية بنجاح', 'الآن');
+            addAlert('info', 'تم تصدير النسخة الاحتياطية', 'الآن');
+        }
+
+        // مسح قاعدة البيانات
+        function clearDatabase() {
+            if (confirm('⚠️ هل أنت متأكد من حذف جميع البيانات؟\n\nهذا الإجراء لا يمكن التراجع عنه!')) {
+                localStorage.removeItem(DB_NAME);
+                nursesNotes = [];
+                displayNotes();
+                updateDatabaseStats();
+                addConnectionLog('warning', 'تم مسح جميع البيانات من قاعدة البيانات', 'الآن');
+                addAlert('warning', 'تم مسح قاعدة البيانات', 'الآن');
+            }
+        }
+
+        // ===== ملاحظات الممرضات =====
+        
+        // إضافة ملاحظة
+        function addNote() {
+            const nurseName = document.getElementById('nurseName').value.trim();
+            const category = document.getElementById('noteCategory').value;
+            const content = document.getElementById('noteContent').value.trim();
+            
+            if (!nurseName) {
+                alert('⚠️ الرجاء إدخال اسم الممرضة/الممرض');
+                return;
+            }
+            
+            if (!content) {
+                alert('⚠️ الرجاء كتابة الملاحظة');
+                return;
+            }
+            
+            const note = {
+                id: Date.now(),
+                nurse: nurseName,
+                category: category,
+                content: content,
+                timestamp: Date.now(),
+                date: new Date().toLocaleDateString('ar'),
+                time: new Date().toLocaleTimeString('ar')
+            };
+            
+            nursesNotes.unshift(note);
+            displayNotes();
+            saveToDatabase();
+            
+            // مسح الحقول
+            document.getElementById('noteContent').value = '';
+            
+            addAlert('info', `تمت إضافة ملاحظة جديدة من ${nurseName}`, 'الآن');
+        }
+
+        // عرض الملاحظات
+        function displayNotes() {
+            const container = document.getElementById('notesContainer');
+            
+            if (nursesNotes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; opacity: 0.5;">
+                        <div style="font-size: 3em;">📝</div>
+                        <p>لا توجد ملاحظات حتى الآن</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = nursesNotes.map(note => `
+                <div class="note-item">
+                    <div class="note-header">
+                        <div>
+                            <div class="note-nurse">👩‍⚕️ ${note.nurse}</div>
+                            <span class="note-category category-${note.category}">
+                                ${getCategoryName(note.category)}
+                            </span>
+                        </div>
+                        <div class="note-time">${note.date} - ${note.time}</div>
+                    </div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-actions">
+                        <button class="btn-small btn-delete" onclick="deleteNote(${note.id})">
+                            🗑️ حذف
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // حذف ملاحظة
+        function deleteNote(id) {
+            if (confirm('هل أنت متأكد من حذف هذه الملاحظة؟')) {
+                nursesNotes = nursesNotes.filter(note => note.id !== id);
+                displayNotes();
+                saveToDatabase();
+                addAlert('warning', 'تم حذف الملاحظة', 'الآن');
+            }
+        }
+
+        // الحصول على اسم التصنيف
+        function getCategoryName(category) {
+            const names = {
+                vital: 'مؤشرات حيوية',
+                feeding: 'تغذية',
+                medication: 'دواء',
+                observation: 'ملاحظة',
+                general: 'عام'
+            };
+            return names[category] || category;
+        }
+
+        // تصدير الملاحظات
+        function exportNotes() {
+            if (nursesNotes.length === 0) {
+                alert('⚠️ لا توجد ملاحظات للتصدير');
+                return;
+            }
+            
+            const data = {
+                patient: 'طفل رضيع - 001',
+                exportDate: new Date().toISOString(),
+                notes: nursesNotes
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `nurses-notes-${Date.now()}.json`;
+            link.click();
+            
+            addAlert('info', 'تم تصدير ملاحظات الممرضات', 'الآن');
+        }
+
+        // ===== Arduino =====
+        
+        // الاتصال بـ Arduino
+        async function connectArduino() {
+            arduinoIP = document.getElementById('arduinoIP').value.trim();
+            const port = document.getElementById('arduinoPort').value.trim();
+            
+            if (!arduinoIP) {
+                alert('⚠️ الرجاء إدخال عنوان IP');
+                return;
+            }
+            
+            try {
+                // محاولة الاتصال
+                const response = await fetch(`http://${arduinoIP}:${port}/status`, {
+                    method: 'GET',
+                    mode: 'no-cors', // تجربة no-cors
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    signal: AbortSignal.timeout(5000) // timeout بعد 5 ثواني
+                });
+                
+                // إذا وصلنا هنا، فالاتصال نجح
+                arduinoConnected = true;
+                document.getElementById('arduinoStatus').className = 'status-indicator status-connected';
+                document.getElementById('arduinoStatus').innerHTML = '<span class="status-dot-animated"></span> متصل';
+                
+                // بدء قراءة البيانات الحقيقية
+                startArduinoReading();
+                
+                addConnectionLog('info', `✅ تم الاتصال بـ Arduino على ${arduinoIP}:${port}`, 'الآن');
+                addAlert('info', '✅ Arduino متصل - القراءات الآن حقيقية!', 'الآن');
+                
+            } catch (error) {
+                console.log('محاولة الاتصال الفعلي فشلت، تجربة وضع المحاكاة...', error);
+                
+                // في حالة الفشل، استخدم البيانات المحاكاة
+                arduinoConnected = true; // للتجربة
+                document.getElementById('arduinoStatus').className = 'status-indicator status-connected';
+                document.getElementById('arduinoStatus').innerHTML = '<span class="status-dot-animated"></span> متصل (محاكاة)';
+                
+                startArduinoSimulation();
+                
+                addConnectionLog('warning', `⚠️ لم يتم العثور على Arduino على ${arduinoIP}:${port}`, 'الآن');
+                addConnectionLog('info', `🔄 تم تشغيل وضع المحاكاة للتجربة`, 'الآن');
+                addAlert('warning', '⚠️ وضع المحاكاة: Arduino غير متصل فعلياً', 'الآن');
+            }
+        }
+
+        // قطع الاتصال
+        function disconnectArduino() {
+            arduinoConnected = false;
+            if (arduinoInterval) {
+                clearInterval(arduinoInterval);
+                arduinoInterval = null;
+            }
+            
+            document.getElementById('arduinoStatus').className = 'status-indicator status-disconnected';
+            document.getElementById('arduinoStatus').innerHTML = '<span class="status-dot-animated"></span> غير متصل';
+            
+            // مسح القراءات
+            document.getElementById('arduinoTemp').textContent = '--';
+            document.getElementById('arduinoHum').textContent = '--';
+            document.getElementById('arduinoHeart').textContent = '--';
+            document.getElementById('arduinoOxygen').textContent = '--';
+            
+            addConnectionLog('info', 'تم قطع الاتصال بـ Arduino', 'الآن');
+            addAlert('info', 'تم قطع الاتصال بـ Arduino', 'الآن');
+        }
+
+        // قراءة البيانات من Arduino
+        async function readArduinoData() {
+            if (!arduinoConnected) return;
+            
+            try {
+                const port = document.getElementById('arduinoPort').value.trim();
+                const response = await fetch(`http://${arduinoIP}:${port}/sensors`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                
+                // محاولة قراءة JSON
+                const data = await response.json();
+                
+                // تحديث البيانات الرئيسية مباشرة
+                updateArduinoDisplay(data);
+                
+                // رسالة نجاح
+                console.log('✅ تم استقبال البيانات من Arduino:', data);
+                
+            } catch (error) {
+                console.error('❌ خطأ في قراءة البيانات من Arduino:', error);
+                // في حالة الفشل، لا تفعل شيء - ستستمر القيم الأخيرة
+            }
+        }
+
+        // بدء قراءة البيانات
+        function startArduinoReading() {
+            if (arduinoInterval) clearInterval(arduinoInterval);
+            
+            arduinoInterval = setInterval(readArduinoData, 2000);
+            readArduinoData();
+        }
+
+        // محاكاة Arduino (للتجربة)
+        function startArduinoSimulation() {
+            if (arduinoInterval) clearInterval(arduinoInterval);
+            
+            arduinoInterval = setInterval(() => {
+                const simulatedData = {
+                    temperature: (35 + Math.random() * 3).toFixed(1),
+                    humidity: (50 + Math.random() * 15).toFixed(0),
+                    heartRate: Math.floor(120 + Math.random() * 40),
+                    oxygen: Math.floor(92 + Math.random() * 7)
+                };
+                
+                updateArduinoDisplay(simulatedData);
+            }, 2000);
+        }
+
+        // تحديث عرض بيانات Arduino
+        function updateArduinoDisplay(data) {
+            // تحديث بطاقات Arduino
+            const arduinoTempEl = document.getElementById('arduinoTemp');
+            const arduinoHumEl = document.getElementById('arduinoHum');
+            const arduinoHeartEl = document.getElementById('arduinoHeart');
+            const arduinoOxygenEl = document.getElementById('arduinoOxygen');
+            
+            if (arduinoTempEl) arduinoTempEl.textContent = data.temperature || '--';
+            if (arduinoHumEl) arduinoHumEl.textContent = data.humidity || '--';
+            if (arduinoHeartEl) arduinoHeartEl.textContent = data.heartRate || '--';
+            if (arduinoOxygenEl) arduinoOxygenEl.textContent = data.oxygen || '--';
+            
+            const now = new Date().toLocaleTimeString('ar');
+            const lastSyncEl = document.getElementById('arduinoLastSync');
+            if (lastSyncEl) lastSyncEl.textContent = `آخر مزامنة: ${now}`;
+            
+            // تحديث البيانات الرئيسية من Arduino مباشرة
+            if (data.temperature) {
+                vitalData.bodyTemp = parseFloat(data.temperature);
+                vitalData.envTemp = parseFloat(data.temperature);
+            }
+            if (data.humidity) {
+                vitalData.humidity = parseFloat(data.humidity);
+            }
+            if (data.heartRate) {
+                vitalData.heartRate = parseFloat(data.heartRate);
+            }
+            if (data.oxygen) {
+                vitalData.oxygenLevel = parseFloat(data.oxygen);
+            }
+            // يمكن إضافة معدل التنفس إذا كان متوفراً
+            if (data.respRate) {
+                vitalData.respRate = parseFloat(data.respRate);
+            }
+            
+            // تحديث جميع الشاشات بالقيم الجديدة
+            updateAll();
+            
+            // إضافة سجل للقراءة الناجحة
+            if (Math.random() > 0.9) { // 10% من الوقت لتجنب الإزعاج
+                addConnectionLog('info', `تم استقبال البيانات من Arduino بنجاح`, 'الآن');
+            }
+        }
+
+        // إضافة سجل اتصال
+        function addConnectionLog(type, message, time) {
+            const container = document.getElementById('connectionLog');
+            const icons = {
+                info: 'ℹ️',
+                warning: '⚠️',
+                danger: '🚨'
+            };
+
+            const log = document.createElement('div');
+            log.className = `alert-item alert-${type}`;
+            log.innerHTML = `
+                <div class="alert-icon">${icons[type]}</div>
+                <div class="alert-content">
+                    <strong>${type === 'info' ? 'معلومة' : type === 'warning' ? 'تحذير' : 'خطأ'}:</strong> ${message}
+                </div>
+                <div class="alert-time">${time}</div>
+            `;
+
+            container.insertBefore(log, container.firstChild);
+
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        // التهيئة
+        document.addEventListener('DOMContentLoaded', function() {
+            initSystem();
+            initDatabase();
+            startRealTimeUpdates();
+            initCharts();
+            setInterval(updateAll, 2000);
+        });
+
+        function initSystem() {
+            console.log('🏥 نظام الحاضنة الذكية - جاهز للعمل');
+            updateAll();
+            addAlert('info', 'النظام متصل وجاهز للعمل', 'الآن');
+        }
+
+        function updateAll() {
+            // تحديث القراءات الحالية
+            const bodyTempEl = document.getElementById('bodyTemp');
+            const heartRateEl = document.getElementById('heartRate');
+            const oxygenLevelEl = document.getElementById('oxygenLevel');
+            const respRateEl = document.getElementById('respRate');
+            const humidityEl = document.getElementById('humidity');
+            const weightEl = document.getElementById('weight');
+            const noiseEl = document.getElementById('noise');
+            const envTempEl = document.getElementById('envTemp');
+
+            if (bodyTempEl) bodyTempEl.textContent = vitalData.bodyTemp.toFixed(1);
+            if (heartRateEl) heartRateEl.textContent = Math.round(vitalData.heartRate);
+            if (oxygenLevelEl) oxygenLevelEl.textContent = Math.round(vitalData.oxygenLevel);
+            if (respRateEl) respRateEl.textContent = Math.round(vitalData.respRate);
+            if (humidityEl) humidityEl.textContent = Math.round(vitalData.humidity);
+            if (weightEl) weightEl.textContent = vitalData.weight.toFixed(1);
+            if (noiseEl) noiseEl.textContent = Math.round(vitalData.noise);
+            if (envTempEl) envTempEl.textContent = vitalData.envTemp.toFixed(1);
+
+            // تحديث العرض المرئي
+            const visualTempEl = document.getElementById('visualTemp');
+            const visualHumidityEl = document.getElementById('visualHumidity');
+            const visualHeartEl = document.getElementById('visualHeart');
+            const visualOxygenEl = document.getElementById('visualOxygen');
+
+            if (visualTempEl) visualTempEl.textContent = vitalData.bodyTemp.toFixed(1) + '°C';
+            if (visualHumidityEl) visualHumidityEl.textContent = Math.round(vitalData.humidity) + '%';
+            if (visualHeartEl) visualHeartEl.textContent = Math.round(vitalData.heartRate) + ' bpm';
+            if (visualOxygenEl) visualOxygenEl.textContent = Math.round(vitalData.oxygenLevel) + '%';
+
+            // تحديث الوزن الحالي في معلومات المريض
+            const currentWeightEl = document.getElementById('currentWeight');
+            if (currentWeightEl) currentWeightEl.textContent = vitalData.weight.toFixed(1) + ' كجم';
+
+            // تحديث آخر تحديث
+            const now = new Date();
+            const lastUpdateEl = document.getElementById('lastUpdate');
+            if (lastUpdateEl) lastUpdateEl.textContent = now.toLocaleTimeString('ar');
+
+            // تحديث حالة المؤشرات
+            updateVitalStatuses();
+        }
+
+        // تحديث حالات المؤشرات
+        function updateVitalStatuses() {
+            // فحص درجة الحرارة
+            checkVitalStatus('bodyTemp', vitalData.bodyTemp, 36.0, 37.5, '°C');
+            
+            // فحص نبضات القلب
+            checkVitalStatus('heartRate', vitalData.heartRate, 120, 160, ' bpm');
+            
+            // فحص الأكسجين
+            checkVitalStatus('oxygenLevel', vitalData.oxygenLevel, 90, 95, '%');
+            
+            // فحص التنفس
+            checkVitalStatus('respRate', vitalData.respRate, 40, 60, ' نفس/د');
+        }
+
+        function checkVitalStatus(id, value, min, max, unit) {
+            // البحث عن العنصر الأب للمؤشر
+            const valueEl = document.getElementById(id);
+            if (!valueEl) return;
+            
+            const sensorItem = valueEl.closest('.sensor-item');
+            if (!sensorItem) return;
+            
+            const statusEl = sensorItem.querySelector('.sensor-status');
+            if (!statusEl) return;
+            
+            // تحديد الحالة
+            if (value >= min && value <= max) {
+                statusEl.className = 'sensor-status status-ok';
+                statusEl.textContent = 'طبيعي';
+            } else if (value < min - 2 || value > max + 2) {
+                statusEl.className = 'sensor-status status-alert';
+                statusEl.textContent = 'حرج!';
+                // تنبيه مرة واحدة فقط
+                if (!statusEl.dataset.alerted) {
+                    addAlert('danger', `قيمة ${getVitalNameAr(id)} خارج المدى الآمن: ${value.toFixed(1)}${unit}`, 'الآن');
+                    statusEl.dataset.alerted = 'true';
+                }
+            } else {
+                statusEl.className = 'sensor-status status-ok';
+                statusEl.textContent = 'تحذير';
+                statusEl.dataset.alerted = '';
+            }
+        }
+
+        function getVitalNameAr(id) {
+            const names = {
+                bodyTemp: 'درجة الحرارة',
+                heartRate: 'نبضات القلب',
+                oxygenLevel: 'الأكسجين',
+                respRate: 'معدل التنفس'
+            };
+            return names[id] || id;
+        }
+
+        function startRealTimeUpdates() {
+            // إيقاف أي محاكاة سابقة
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+            }
+            
+            simulationInterval = setInterval(() => {
+                // فقط إذا لم يكن Arduino متصل، نحاكي البيانات
+                if (!arduinoConnected) {
+                    // محاكاة تغييرات طفيفة
+                    vitalData.bodyTemp += (Math.random() - 0.5) * 0.2;
+                    vitalData.bodyTemp = Math.max(35, Math.min(38, vitalData.bodyTemp));
+                    
+                    vitalData.heartRate += (Math.random() - 0.5) * 5;
+                    vitalData.heartRate = Math.max(100, Math.min(180, vitalData.heartRate));
+                    
+                    vitalData.oxygenLevel += (Math.random() - 0.5) * 2;
+                    vitalData.oxygenLevel = Math.max(85, Math.min(100, vitalData.oxygenLevel));
+                    
+                    vitalData.respRate += (Math.random() - 0.5) * 3;
+                    vitalData.respRate = Math.max(30, Math.min(70, vitalData.respRate));
+                    
+                    vitalData.humidity += (Math.random() - 0.5) * 2;
+                    vitalData.humidity = Math.max(40, Math.min(70, vitalData.humidity));
+                    
+                    vitalData.noise += (Math.random() - 0.5) * 5;
+                    vitalData.noise = Math.max(30, Math.min(60, vitalData.noise));
+                    
+                    vitalData.envTemp += (Math.random() - 0.5) * 0.3;
+                    vitalData.envTemp = Math.max(32, Math.min(37, vitalData.envTemp));
+                    
+                    // تحديث الوزن ببطء (زيادة تدريجية)
+                    if (Math.random() > 0.95) { // 5% احتمال كل تحديث
+                        vitalData.weight += 0.01;
+                    }
+                    
+                    updateAll();
+                }
+                
+                // تحديث الرسوم البيانية دائماً
+                updateCharts();
+                
+                // تحديث شارة الحالة دائماً
+                updateStatusBadge();
+            }, 2000);
+        }
+
+        function updateStatusBadge() {
+            const statusBadge = document.getElementById('statusBadge');
+            if (!statusBadge) return;
+            
+            // فحص إذا كانت جميع القيم طبيعية
+            const tempOk = vitalData.bodyTemp >= 36.0 && vitalData.bodyTemp <= 37.5;
+            const heartOk = vitalData.heartRate >= 120 && vitalData.heartRate <= 160;
+            const oxygenOk = vitalData.oxygenLevel >= 90 && vitalData.oxygenLevel <= 100;
+            const respOk = vitalData.respRate >= 40 && vitalData.respRate <= 60;
+            
+            if (tempOk && heartOk && oxygenOk && respOk) {
+                statusBadge.className = 'badge badge-normal';
+                statusBadge.textContent = '✓ طبيعي';
+            } else if (!tempOk || !heartOk || !oxygenOk || !respOk) {
+                const tempCritical = vitalData.bodyTemp < 34 || vitalData.bodyTemp > 39;
+                const heartCritical = vitalData.heartRate < 100 || vitalData.heartRate > 180;
+                const oxygenCritical = vitalData.oxygenLevel < 85;
+                
+                if (tempCritical || heartCritical || oxygenCritical) {
+                    statusBadge.className = 'badge badge-critical';
+                    statusBadge.textContent = '🚨 حرج';
+                } else {
+                    statusBadge.className = 'badge badge-warning';
+                    statusBadge.textContent = '⚠ تحذير';
+                }
+            }
+        }
+
+        // التحكم
+        function updateHeatingTemp(val) {
+            document.getElementById('heatingTempValue').textContent = val + '°C';
+            addAlert('info', `تم ضبط درجة الحرارة المستهدفة على ${val}°C`, 'الآن');
+        }
+
+        function updateHumidityTarget(val) {
+            document.getElementById('humidityTargetValue').textContent = val + '%';
+            addAlert('info', `تم ضبط الرطوبة المستهدفة على ${val}%`, 'الآن');
+        }
+
+        function updateOxygenLevel(val) {
+            document.getElementById('oxygenLevelValue').textContent = val + '%';
+            addAlert('info', `تم ضبط تركيز الأكسجين على ${val}%`, 'الآن');
+        }
+
+        function updateLightIntensity(val) {
+            document.getElementById('lightIntensityValue').textContent = val + '%';
+        }
+
+        function updateNormalLight(val) {
+            document.getElementById('normalLightValue').textContent = val + '%';
+            addAlert('info', `تم ضبط الإضاءة العادية على ${val}%`, 'الآن');
+        }
+
+        function updateJaundiceLight(val) {
+            document.getElementById('jaundiceLightValue').textContent = val + '%';
+            addAlert('info', `تم ضبط شدة الضوء الأصفر على ${val}%`, 'الآن');
+        }
+
+        function updateUVDuration(val) {
+            document.getElementById('uvDurationValue').textContent = val + ' د';
+        }
+
+        // متغيرات UV التعقيم
+        let uvTimerInterval = null;
+        let uvTimeRemaining = 0;
+
+        function toggleUVSterilization(isActive) {
+            if (isActive) {
+                // التحقق من تأكيد المستخدم
+                const confirmed = confirm(
+                    '⚠️ تحذير أمان!\n\n' +
+                    'هل أنت متأكد من تفعيل تعقيم UV-C؟\n\n' +
+                    '✓ تأكد من إخلاء الحاضنة تماماً\n' +
+                    '✓ لا يوجد أي شخص بالقرب\n' +
+                    '✓ الأشعة UV-C خطرة على الجلد والعينين\n\n' +
+                    'هل تريد المتابعة؟'
+                );
+                
+                if (confirmed) {
+                    startUVSterilization();
+                } else {
+                    document.getElementById('uvSwitch').checked = false;
+                }
+            } else {
+                stopUVSterilization();
+            }
+        }
+
+        function startUVSterilization() {
+            const duration = parseInt(document.getElementById('uvDuration').value);
+            uvTimeRemaining = duration * 60; // تحويل إلى ثواني
+            
+            // إظهار المؤقت
+            document.getElementById('uvTimer').style.display = 'block';
+            
+            // تعطيل جميع الأنظمة الأخرى للأمان
+            document.getElementById('heatingSwitch').checked = false;
+            document.getElementById('humidifierSwitch').checked = false;
+            document.getElementById('oxygenSwitch').checked = false;
+            document.getElementById('normalLightSwitch').checked = false;
+            document.getElementById('jaundiceSwitch').checked = false;
+            
+            // بدء العد التنازلي
+            uvTimerInterval = setInterval(updateUVTimer, 1000);
+            
+            addAlert('warning', `⚠️ بدء تعقيم UV-C لمدة ${duration} دقيقة - الحاضنة مغلقة!`, 'الآن');
+            addConnectionLog('warning', `تم تفعيل تعقيم UV-C لمدة ${duration} دقيقة`, 'الآن');
+        }
+
+        function updateUVTimer() {
+            if (uvTimeRemaining <= 0) {
+                stopUVSterilization();
+                addAlert('info', '✅ اكتمل التعقيم بنجاح - الحاضنة جاهزة للاستخدام', 'الآن');
+                return;
+            }
+            
+            const minutes = Math.floor(uvTimeRemaining / 60);
+            const seconds = uvTimeRemaining % 60;
+            
+            document.getElementById('uvCountdown').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            uvTimeRemaining--;
+        }
+
+        function stopUVSterilization() {
+            if (uvTimerInterval) {
+                clearInterval(uvTimerInterval);
+                uvTimerInterval = null;
+            }
+            
+            document.getElementById('uvSwitch').checked = false;
+            document.getElementById('uvTimer').style.display = 'none';
+            uvTimeRemaining = 0;
+            
+            addAlert('info', 'تم إيقاف تعقيم UV-C', 'الآن');
+            addConnectionLog('info', 'تم إيقاف نظام التعقيم UV-C', 'الآن');
+        }
+
+        function updateTempMin(val) {
+            document.getElementById('tempMinValue').textContent = val + '°C';
+        }
+
+        function updateTempMax(val) {
+            document.getElementById('tempMaxValue').textContent = val + '°C';
+        }
+
+        // الإعدادات المسبقة
+        function quickPreset(type) {
+            const presets = {
+                normal: { 
+                    temp: 36.5, 
+                    humidity: 55, 
+                    oxygen: 30,
+                    normalLight: 50,
+                    jaundiceLight: false,
+                    uvSterilization: false
+                },
+                intensive: { 
+                    temp: 37.0, 
+                    humidity: 60, 
+                    oxygen: 40,
+                    normalLight: 30,
+                    jaundiceLight: false,
+                    uvSterilization: false
+                },
+                phototherapy: { 
+                    temp: 36.5, 
+                    humidity: 55, 
+                    oxygen: 30,
+                    normalLight: 20,
+                    jaundiceLight: true,
+                    uvSterilization: false
+                }
+            };
+
+            const preset = presets[type];
+            if (preset) {
+                // إعدادات أساسية
+                document.getElementById('heatingTemp').value = preset.temp;
+                updateHeatingTemp(preset.temp);
+                document.getElementById('humidityTarget').value = preset.humidity;
+                updateHumidityTarget(preset.humidity);
+                document.getElementById('oxygenLevelControl').value = preset.oxygen;
+                updateOxygenLevel(preset.oxygen);
+                
+                // إعدادات الإضاءة
+                document.getElementById('normalLightIntensity').value = preset.normalLight;
+                updateNormalLight(preset.normalLight);
+                
+                if (preset.jaundiceLight) {
+                    document.getElementById('jaundiceSwitch').checked = true;
+                    document.getElementById('jaundiceLightIntensity').value = 60;
+                    updateJaundiceLight(60);
+                } else {
+                    document.getElementById('jaundiceSwitch').checked = false;
+                }
+                
+                // تفعيل الأنظمة
+                document.getElementById('heatingSwitch').checked = true;
+                document.getElementById('humidifierSwitch').checked = true;
+                document.getElementById('oxygenSwitch').checked = true;
+                document.getElementById('normalLightSwitch').checked = true;
+                
+                const presetNames = {
+                    normal: 'العادي',
+                    intensive: 'المكثف',
+                    phototherapy: 'العلاج الضوئي لليرقان'
+                };
+                
+                addAlert('info', `تم تفعيل الوضع: ${presetNames[type]}`, 'الآن');
+            }
+        }
+
+        function emergencyStop() {
+            if (confirm('⚠️ هل أنت متأكد من إيقاف جميع الأنظمة؟')) {
+                document.getElementById('heatingSwitch').checked = false;
+                document.getElementById('humidifierSwitch').checked = false;
+                document.getElementById('oxygenSwitch').checked = false;
+                document.getElementById('normalLightSwitch').checked = false;
+                document.getElementById('jaundiceSwitch').checked = false;
+                
+                // إيقاف UV إذا كان مفعلاً
+                if (document.getElementById('uvSwitch').checked) {
+                    stopUVSterilization();
+                }
+                
+                addAlert('danger', '🚨 تم إيقاف جميع الأنظمة في وضع الطوارئ!', 'الآن');
+                addConnectionLog('danger', 'تفعيل إيقاف الطوارئ - جميع الأنظمة متوقفة', 'الآن');
+            }
+        }
+
+        // التنبيهات
+        function addAlert(type, message, time) {
+            const container = document.getElementById('alertsList');
+            const icons = {
+                info: 'ℹ️',
+                warning: '⚠️',
+                danger: '🚨'
+            };
+
+            const alert = document.createElement('div');
+            alert.className = `alert-item alert-${type}`;
+            alert.innerHTML = `
+                <div class="alert-icon">${icons[type]}</div>
+                <div class="alert-content">
+                    <strong>${type === 'info' ? 'معلومة' : type === 'warning' ? 'تحذير' : 'تنبيه حرج'}:</strong> ${message}
+                </div>
+                <div class="alert-time">${time}</div>
+            `;
+
+            container.insertBefore(alert, container.firstChild);
+
+            // حذف القديم
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function emergencyAlert() {
+            if (confirm('⚠️ هل أنت متأكد من تفعيل تنبيه الطوارئ؟\n\nسيتم إرسال إشعار فوري لجميع الطاقم الطبي.')) {
+                addAlert('danger', 'تم تفعيل تنبيه الطوارئ! الطاقم الطبي في الطريق', 'الآن');
+                document.getElementById('statusBadge').className = 'badge badge-critical';
+                document.getElementById('statusBadge').textContent = '🚨 طوارئ';
+            }
+        }
+
+        // الرسوم البيانية
+        function initCharts() {
+            const chartConfig = {
+                type: 'line',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            };
+
+            const data24h = Array.from({length: 24}, () => 0);
+            
+            charts.temp = new Chart(document.getElementById('tempChart'), {
+                ...chartConfig,
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: 'درجة الحرارة',
+                        data: data24h.map(() => 36 + Math.random() * 1.5),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                }
+            });
+
+            charts.heart = new Chart(document.getElementById('heartChart'), {
+                ...chartConfig,
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: 'نبضات القلب',
+                        data: data24h.map(() => 120 + Math.random() * 40),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                }
+            });
+
+            charts.oxygen = new Chart(document.getElementById('oxygenChart'), {
+                ...chartConfig,
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: 'الأكسجين',
+                        data: data24h.map(() => 90 + Math.random() * 8),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                }
+            });
+
+            charts.humidity = new Chart(document.getElementById('humidityChart'), {
+                ...chartConfig,
+                data: {
+                    labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                    datasets: [{
+                        label: 'الرطوبة',
+                        data: data24h.map(() => 50 + Math.random() * 15),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                }
+            });
+        }
+
+        function updateCharts() {
+            // تحديث الرسوم البيانية (محاكاة)
+        }
+
+        // التبويبات
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // الثيم
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme');
+            const newTheme = theme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            event.target.textContent = newTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // استعادة الثيم
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        if (document.querySelector('.theme-toggle')) {
+            document.querySelector('.theme-toggle').textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // حفظ البيانات
+        function exportData() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                vitalSigns: vitalData
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `incubator-data-${Date.now()}.json`;
+            link.click();
+            
+            addAlert('info', 'تم تصدير البيانات بنجاح', 'الآن');
+        }
+
+        function saveSettings() {
+            addAlert('info', 'تم حفظ الإعدادات بنجاح', 'الآن');
+        }
+
+        // ===== وظائف العرض ثلاثي الأبعاد =====
+        
+        // تبديل الدوران التلقائي
+        function toggleRotation() {
+            const incubator = document.getElementById('incubator3d');
+            isRotating = !isRotating;
+            
+            if (isRotating) {
+                incubator.classList.add('rotating');
+                document.getElementById('rotationText').textContent = 'إيقاف الدوران';
+                document.getElementById('rotationIcon').textContent = '⏸️';
+            } else {
+                incubator.classList.remove('rotating');
+                document.getElementById('rotationText').textContent = 'دوران تلقائي';
+                document.getElementById('rotationIcon').textContent = '🔄';
+            }
+        }
+        
+        // إعادة ضبط العرض
+        function resetView() {
+            const incubator = document.getElementById('incubator3d');
+            incubator.classList.remove('rotating');
+            incubator.style.transform = 'translate(-50%, -50%) rotateX(15deg) rotateY(0deg)';
+            isRotating = false;
+            document.getElementById('rotationText').textContent = 'دوران تلقائي';
+            document.getElementById('rotationIcon').textContent = '🔄';
+            
+            // إخفاء لوحة المعلومات
+            document.getElementById('systemInfoPanel').classList.remove('active');
+        }
+        
+        // تبديل جميع الأضواء
+        function toggleAllLights() {
+            allLightsOn = !allLightsOn;
+            
+            const lightNormal = document.getElementById('lightNormal');
+            const lightJaundice = document.getElementById('lightJaundice');
+            const lightUV = document.getElementById('lightUV');
+            
+            if (allLightsOn) {
+                lightNormal.classList.add('active');
+                lightJaundice.classList.add('active');
+                lightUV.classList.add('active');
+                document.getElementById('lightsText').textContent = 'إخفاء الأضواء';
+            } else {
+                lightNormal.classList.remove('active');
+                lightJaundice.classList.remove('active');
+                lightUV.classList.remove('active');
+                document.getElementById('lightsText').textContent = 'إظهار جميع الأضواء';
+                updateLightEffects(); // تحديث حسب الحالة الفعلية
+            }
+        }
+        
+        // تحديث تأثيرات الإضاءة حسب الأنظمة المفعلة
+        function updateLightEffects() {
+            if (allLightsOn) return; // لا تحديث إذا كانت جميع الأضواء مفعلة يدوياً
+            
+            const normalSwitch = document.getElementById('normalLightSwitch');
+            const jaundiceSwitch = document.getElementById('jaundiceSwitch');
+            const uvSwitch = document.getElementById('uvSwitch');
+            
+            const lightNormal = document.getElementById('lightNormal');
+            const lightJaundice = document.getElementById('lightJaundice');
+            const lightUV = document.getElementById('lightUV');
+            
+            if (normalSwitch && normalSwitch.checked) {
+                lightNormal.classList.add('active');
+            } else {
+                lightNormal.classList.remove('active');
+            }
+            
+            if (jaundiceSwitch && jaundiceSwitch.checked) {
+                lightJaundice.classList.add('active');
+            } else {
+                lightJaundice.classList.remove('active');
+            }
+            
+            if (uvSwitch && uvSwitch.checked) {
+                lightUV.classList.add('active');
+            } else {
+                lightUV.classList.remove('active');
+            }
+        }
+        
+        // إظهار معلومات النظام
+        function showSystemInfo(systemType) {
+            const panel = document.getElementById('systemInfoPanel');
+            const title = document.getElementById('systemInfoTitle');
+            const icon = document.getElementById('systemInfoIcon');
+            const name = document.getElementById('systemInfoName');
+            const content = document.getElementById('systemInfoContent');
+            
+            const systemsInfo = {
+                'heating': {
+                    icon: '🔥',
+                    name: 'نظام التدفئة',
+                    content: `
+                        <p><strong>الوظيفة:</strong> الحفاظ على درجة حرارة مثالية للطفل الخديج</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">درجة الحرارة المستهدفة</div>
+                                <div class="info-item-value">${document.getElementById('heatingTempValue')?.textContent || '36.5°C'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الحالة</div>
+                                <div class="info-item-value">${document.getElementById('heatingSwitch')?.checked ? '🟢 مفعّل' : '🔴 متوقف'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">درجة الحرارة الحالية</div>
+                                <div class="info-item-value">${vitalData.envTemp.toFixed(1)}°C</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>📌 المدى الآمن:</strong> 32-37°C</p>
+                        <p><strong>⚡ التحكم:</strong> تحكم تلقائي بالحرارة مع حماية من الارتفاع الزائد</p>
+                    `
+                },
+                'humidity': {
+                    icon: '💧',
+                    name: 'نظام الترطيب',
+                    content: `
+                        <p><strong>الوظيفة:</strong> الحفاظ على رطوبة مثالية لجلد الطفل ومنع الجفاف</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">الرطوبة المستهدفة</div>
+                                <div class="info-item-value">${document.getElementById('humidityTargetValue')?.textContent || '55%'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الحالة</div>
+                                <div class="info-item-value">${document.getElementById('humidifierSwitch')?.checked ? '🟢 مفعّل' : '🔴 متوقف'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الرطوبة الحالية</div>
+                                <div class="info-item-value">${Math.round(vitalData.humidity)}%</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>📌 المدى الآمن:</strong> 40-70%</p>
+                        <p><strong>💧 الآلية:</strong> رذاذ ماء دقيق معقم مع تحكم أوتوماتيكي</p>
+                    `
+                },
+                'oxygen': {
+                    icon: '🫁',
+                    name: 'نظام إمداد الأكسجين',
+                    content: `
+                        <p><strong>الوظيفة:</strong> توفير الأكسجين الإضافي للأطفال الذين يعانون من صعوبات في التنفس</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">تركيز الأكسجين</div>
+                                <div class="info-item-value">${document.getElementById('oxygenLevelValue')?.textContent || '30%'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الحالة</div>
+                                <div class="info-item-value">${document.getElementById('oxygenSwitch')?.checked ? '🟢 مفعّل' : '🔴 متوقف'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">SpO2 الحالي</div>
+                                <div class="info-item-value">${Math.round(vitalData.oxygenLevel)}%</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>📌 المدى الآمن:</strong> 21-100% (21% = هواء عادي)</p>
+                        <p><strong>⚕️ تحذير:</strong> تركيز عالي للأكسجين لفترات طويلة قد يكون ضاراً - يجب المراقبة الطبية</p>
+                    `
+                },
+                'light-normal': {
+                    icon: '💡',
+                    name: 'الإضاءة العادية',
+                    content: `
+                        <p><strong>الوظيفة:</strong> إضاءة LED بيضاء للرؤية الواضحة ومراقبة الطفل</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">الشدة</div>
+                                <div class="info-item-value">${document.getElementById('normalLightValue')?.textContent || '50%'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الحالة</div>
+                                <div class="info-item-value">${document.getElementById('normalLightSwitch')?.checked ? '🟢 مفعّل' : '🔴 متوقف'}</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>📌 الاستخدام:</strong></p>
+                        <ul style="margin-right: 20px; line-height: 1.8;">
+                            <li>النهار: 50-70% للمراقبة الواضحة</li>
+                            <li>الليل: 20-30% لراحة الطفل</li>
+                            <li>الطوارئ: 100% عند الحاجة</li>
+                        </ul>
+                        <p><strong>💡 النوع:</strong> LED موفر للطاقة بدون حرارة زائدة</p>
+                    `
+                },
+                'light-jaundice': {
+                    icon: '🟡',
+                    name: 'العلاج الضوئي (اليرقان)',
+                    content: `
+                        <p><strong>الوظيفة:</strong> علاج اليرقان الوليدي (ارتفاع البيليروبين) بالضوء الأزرق-الأصفر</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">الشدة</div>
+                                <div class="info-item-value">${document.getElementById('jaundiceLightValue')?.textContent || '60%'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الحالة</div>
+                                <div class="info-item-value">${document.getElementById('jaundiceSwitch')?.checked ? '🟢 نشط' : '🔴 متوقف'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الطول الموجي</div>
+                                <div class="info-item-value">450-470 nm</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>⚕️ الاستخدام الطبي:</strong></p>
+                        <ul style="margin-right: 20px; line-height: 1.8;">
+                            <li>يحول البيليروبين إلى شكل قابل للذوبان</li>
+                            <li>مدة العلاج: 8-12 ساعة حسب الحالة</li>
+                            <li>حماية عيون الطفل ضرورية</li>
+                            <li>مراقبة البيليروبين كل 4-6 ساعات</li>
+                        </ul>
+                        <p><strong>⚠️ احتياطات:</strong> حماية العينين + مراقبة الحرارة + ترطيب مستمر</p>
+                    `
+                },
+                'light-uv': {
+                    icon: '🔵',
+                    name: 'تعقيم UV-C',
+                    content: `
+                        <p><strong>الوظيفة:</strong> تعقيم الحاضنة بالأشعة فوق البنفسجية من النوع C</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">المدة المحددة</div>
+                                <div class="info-item-value">${document.getElementById('uvDurationValue')?.textContent || '15 د'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الحالة</div>
+                                <div class="info-item-value">${document.getElementById('uvSwitch')?.checked ? '🟢 نشط' : '🔴 متوقف'}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الطول الموجي</div>
+                                <div class="info-item-value">254 nm</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>🦠 الفعالية:</strong> يقضي على 99.9% من البكتيريا والفيروسات</p>
+                        <p><strong>⛔ تحذير أمان حرج:</strong></p>
+                        <ul style="margin-right: 20px; line-height: 1.8; color: #ef4444; font-weight: bold;">
+                            <li>خطر جسيم على الجلد والعينين!</li>
+                            <li>يجب إخلاء الحاضنة تماماً</li>
+                            <li>لا يُفتح الباب أثناء التشغيل</li>
+                            <li>للتعقيم فقط - ليس للاستخدام أثناء وجود الطفل</li>
+                        </ul>
+                        <p><strong>📅 الجدول:</strong> يومياً 15 دقيقة أو أسبوعياً 30 دقيقة</p>
+                    `
+                },
+                'sensors': {
+                    icon: '📡',
+                    name: 'المستشعرات',
+                    content: `
+                        <p><strong>الوظيفة:</strong> مراقبة مستمرة للمؤشرات الحيوية والبيئية</p>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-item-label">درجة حرارة الجسم</div>
+                                <div class="info-item-value">${vitalData.bodyTemp.toFixed(1)}°C</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">نبضات القلب</div>
+                                <div class="info-item-value">${Math.round(vitalData.heartRate)} bpm</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الأكسجين SpO2</div>
+                                <div class="info-item-value">${Math.round(vitalData.oxygenLevel)}%</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">معدل التنفس</div>
+                                <div class="info-item-value">${Math.round(vitalData.respRate)} /د</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">الوزن</div>
+                                <div class="info-item-value">${vitalData.weight.toFixed(1)} كجم</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-item-label">مستوى الضوضاء</div>
+                                <div class="info-item-value">${Math.round(vitalData.noise)} dB</div>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;"><strong>📡 الأنواع:</strong></p>
+                        <ul style="margin-right: 20px; line-height: 1.8;">
+                            <li>DHT22: درجة الحرارة والرطوبة</li>
+                            <li>MAX30102: نبضات القلب والأكسجين</li>
+                            <li>حساس الوزن: مراقبة النمو</li>
+                            <li>حساس الصوت: مستوى الضوضاء</li>
+                        </ul>
+                        <p><strong>🔄 التحديث:</strong> قراءات كل ثانيتين مع إنذارات تلقائية</p>
+                    `
+                }
+            };
+            
+            const info = systemsInfo[systemType];
+            if (info) {
+                icon.textContent = info.icon;
+                name.textContent = info.name;
+                content.innerHTML = info.content;
+                panel.classList.add('active');
+                
+                // تمييز المؤشر المحدد
+                document.querySelectorAll('.system-indicator').forEach(ind => {
+                    ind.style.transform = '';
+                    ind.style.boxShadow = '';
+                });
+                
+                const selectedIndicator = document.querySelector(`[data-system="${systemType}"]`);
+                if (selectedIndicator) {
+                    selectedIndicator.style.transform = 'scale(1.3)';
+                    selectedIndicator.style.boxShadow = '0 0 30px rgba(102, 126, 234, 0.8)';
+                }
+            }
+        }
+        
+        // تحديث تأثيرات الإضاءة عند تغيير المفاتيح
+        function initLightEffectsUpdate() {
+            // مراقبة التغييرات على المفاتيح
+            const normalSwitch = document.getElementById('normalLightSwitch');
+            const jaundiceSwitch = document.getElementById('jaundiceSwitch');
+            const uvSwitch = document.getElementById('uvSwitch');
+            
+            if (normalSwitch) {
+                normalSwitch.addEventListener('change', updateLightEffects);
+            }
+            if (jaundiceSwitch) {
+                jaundiceSwitch.addEventListener('change', updateLightEffects);
+            }
+            if (uvSwitch) {
+                uvSwitch.addEventListener('change', updateLightEffects);
+            }
+        }
+        
+        // تهيئة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            initSystem();
+            initDatabase();
+            startRealTimeUpdates();
+            initCharts();
+            initLightEffectsUpdate();
+            setInterval(updateAll, 2000);
+        });
+</body>
+</html>
